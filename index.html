@@ -29,13 +29,13 @@
                                     required>
                             </div>
                             <div class="d-grid gap-2">
-                                <a href="Dashboard.html" class="btn btn-primary"><button type="submit" class="btn btn-primary">Iniciar sesión</button></a>
+                                <button id="loginButton" type="button" class="btn btn-primary">Iniciar sesión</button>
                             </div>
                             <div class="alert alert-danger mt-3 invalid-credentials-alert d-none" role="alert">
                                 Credenciales incorrectas.
                             </div>
                             <div class="alert alert-success mt-3 welcome-alert d-none" role="alert">
-                                ¡Bienvenido a Malekisho!.
+                                ¡Bienvenido a Malekisho!
                             </div>
                         </form>
                     </div>
@@ -47,30 +47,28 @@
         </div>
     </div>
 
-    <script>
-        function loginUser() {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
+<script>
+    function loginUser() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
 
-            // Verificar las credenciales
-            if (username === 'malek' && password === 'malekisho123') {
-                var welcomeAlert = document.querySelector('.welcome-alert');
-                welcomeAlert.classList.remove('d-none');
-                welcomeAlert.classList.add('show');
-
-                setTimeout(function () {
-                    welcomeAlert.classList.remove('show');
-                    welcomeAlert.classList.add('d-none');
-                }, 3000); // Ocultar la alerta de bienvenida después de 3 segundos
-
-                return true; // Permite el envío del formulario
-            } else {
-                var alertElement = document.querySelector('.invalid-credentials-alert');
-                alertElement.classList.remove('d-none');
-                return false; // Evita el envío del formulario
-            }
+        // Verificar las credenciales
+        if (username === 'granja' && password === 'bokoharam') {
+            // Redirigir al usuario a la página de dashboard
+            window.location.href = "Dashboard.html";
+            return false; // Evitar el envío del formulario
+        } else {
+            var alertElement = document.querySelector('.invalid-credentials-alert');
+            alertElement.classList.remove('d-none');
+            return false; // Evitar el envío del formulario
         }
-    </script>
+    }
+    document.getElementById('loginButton').onclick = function () {
+        return loginUser();
+    };
+</script>
+</body>
+
 
 </body>
 

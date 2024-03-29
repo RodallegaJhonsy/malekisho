@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel | Malekisho</title>
+    <link rel="stylesheet" href="Carrusel.css">
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+</head>
+
+<body>
+
+    <h2>🎡 Carrusel 🎡</h2>
+    <textarea id="emojiInput" rows="8" cols="60" oninput="startEmojiCarousel()"></textarea>
+
+    <br><br>
+
+    <h3>Resultado:</h3>
+    <div id="result"></div>
+
+    <script>
+        function startEmojiCarousel() {
+            const emojiInput = document.getElementById("emojiInput").value;
+            const emojis = filterEmojis(emojiInput);
+            const rows = emojis.length;
+            let resultHtml = "";
+
+            for (let i = 0; i < rows; i++) {
+                const rotatedEmojis = emojis.slice(i).concat(emojis.slice(0, i));
+                resultHtml += rotatedEmojis.join('') + "\n";
+            }
+
+            // Imprimir la línea original al final (solo con emojis)
+            resultHtml += emojis.join('') + "\n";
+
+            document.getElementById("result").innerText = resultHtml;
+
+            // Copiar automáticamente y borrar el input después de 5 segundos
+            setTimeout(() => {
+                copyToClipboard(resultHtml);
+                document.getElementById("emojiInput").value = "";
+            }, 0);
+        }
+
+        function filterEmojis(input) {
+            // Filtrar solo los caracteres que son emojis
+            const emojiRegex = /\p{Emoji}/u;
+            return Array.from(input).filter(char => char.match(emojiRegex));
+        }
+
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+        }
+    </script>
+
+</body>
+
+</html>
