@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reves | Malekisho</title>
+    <link rel="stylesheet" href="Al-Reves.css">
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔙 Al reves 🔙</h1>
+        <input type="text" id="inputWord" oninput="generateAndCopy()" placeholder="Ingresa una palabra">
+        <button onclick="manualCopy()" style="font-size: larger;">Copiar</button>
+        <div id="resultDisplay"></div>
+    </div>
+
+    <script>
+        function generateAndCopy() {
+            var inputWord = document.getElementById('inputWord').value;
+            var resultDisplay = document.getElementById('resultDisplay');
+            resultDisplay.innerHTML = '';
+            var reversedWord = inputWord.split('').reverse().join('');
+            resultDisplay.innerHTML = reversedWord;
+        }
+
+        function manualCopy() {
+            var resultText = document.getElementById('resultDisplay').innerText;
+            copyToClipboard(resultText);
+            document.getElementById('inputWord').value = ''; // Limpiar el input
+        }
+
+        function copyToClipboard(text) {
+            var tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+        }
+    </script>
+
+</body>
+
+</html>

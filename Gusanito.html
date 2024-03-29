@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
     <link rel="stylesheet" href="Gusanito.css">
 </head>
+
 <body>
 
     <div id="container">
@@ -16,24 +17,36 @@
         <br>
         <button id="copiarBtn" onclick="alternarMayusculasMinisculas()">Copiar</button>
     </div>
+<script>
+function alternarMayusculasMinisculas() {
+        const inputElement = document.getElementById('inputText');
+        const words = inputElement.value.split(' ');
 
-    <script>
-        function alternarMayusculasMinisculas() {
-            const inputElement = document.getElementById('inputText');
-            const words = inputElement.value.split(' ');
+        let alternado = '';
+        let lastWasUpperCase = false; // Variable para verificar si la letra anterior era mayúscula
 
-            let alternado = '';
-            for (let i = 0; i < words.length; i++) {
-                let alternatingCase = '';
-                for (let j = 0; j < words[i].length; j++) {
-                    alternatingCase += j % 2 === 0 ? words[i][j].toUpperCase() : words[i][j].toLowerCase();
+        for (let i = 0; i < words.length; i++) {
+            let word = words[i];
+
+            for (let j = 0; j < word.length; j++) {
+                let currentChar = word[j];
+
+                if (lastWasUpperCase) {
+                    alternado += currentChar.toLowerCase(); // Si la letra anterior era mayúscula, convierte a minúscula
+                } else {
+                    alternado += currentChar.toUpperCase(); // Si la letra anterior era minúscula, convierte a mayúscula
                 }
-                alternado += alternatingCase + ' ';
+
+                lastWasUpperCase = !lastWasUpperCase; // Cambia para la siguiente letra
             }
 
-            navigator.clipboard.writeText(alternado.trim());
-            inputElement.value = '';
+            alternado += ' ';
         }
+
+        navigator.clipboard.writeText(alternado.trim());
+        inputElement.value = '';
+    }
+
     </script>
 
 </body>

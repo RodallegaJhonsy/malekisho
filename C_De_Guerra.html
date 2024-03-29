@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guerra | Malekisho</title>
+    <link rel="stylesheet" href="C_De_Guerra.css">
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="title">🪖 C. De Guerra 🪖</div> <br>
+        <input type="text" id="inputWord" oninput="generateAndCopy()" placeholder="Ingresa una palabra">
+        <div id="resultDisplay"></div>
+        <button id="copyBtn" onclick="copyResult()">Copiar</button>
+    </div>
+
+    <script>
+        function generateAndCopy() {
+            var inputWord = document.getElementById('inputWord').value;
+            var resultDisplay = document.getElementById('resultDisplay');
+            resultDisplay.innerHTML = '';
+
+            for (var i = 0; i < inputWord.length; i++) {
+                var currentChar = inputWord[i];
+                switch (currentChar.toLowerCase()) {
+                    case 'a':
+                        resultDisplay.innerHTML += '4';
+                        break;
+                    case 'e':
+                        resultDisplay.innerHTML += '3';
+                        break;
+                    case 'i':
+                        resultDisplay.innerHTML += '1';
+                        break;
+                    case 'o':
+                        resultDisplay.innerHTML += '8';
+                        break;
+                    case 'u':
+                        resultDisplay.innerHTML += '7';
+                        break;
+                    default:
+                        resultDisplay.innerHTML += currentChar;
+                }
+            }
+        }
+
+        function copyResult() {
+                var resultDisplay = document.getElementById('resultDisplay');
+                var textToCopy = resultDisplay.innerText;
+
+                navigator.clipboard.writeText(textToCopy);
+
+                document.getElementById('inputWord').value = '';
+            }
+
+    </script>
+
+</body>
+
+</html>
