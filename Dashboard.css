@@ -1,0 +1,59 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.dashboard-container {
+    margin-top: 50px;
+}
+
+.dashboard-header {
+    background-color: #17a2b8;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.dashboard-title {
+    font-size: 24px;
+    font-weight: bold;
+
+}
+
+.dashboard-subtitle {
+    font-size: 18px;
+}
+
+.dashboard-sections {
+    margin-top: 30px;
+}
+
+.section-box {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.section-box:hover {
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.section-description {
+    margin-top: 10px;
+}
