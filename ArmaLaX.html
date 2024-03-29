@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador y Copiador</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            /* Sombra más prominente */
+            padding: 20px;
+            max-width: 350px;
+            /* Aumento del tamaño de la tarjeta */
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            /* Color del título */
+        }
+
+        input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 15px;
+            /* Aumento del tamaño del input */
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Sombra más suave en el input */
+        }
+
+        #resultDisplay {
+            font-size: 24px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="card-title">✖️ Arma La X ✖️</div>
+        <input type="text" id="inputWord" oninput="generateAndCopy()" placeholder="Ingresa emojis">
+        <div id="resultDisplay"></div>
+    </div>
+
+    <script>
+        function generateAndCopy() {
+            var inputWord = document.getElementById('inputWord').value;
+            var emojiArray = inputWord.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g) || [];
+            var firstEmoji = emojiArray[0] || '';
+            var secondEmoji = emojiArray[1] || '';
+            var thirstEmoji = emojiArray[2] || '';
+            var matrix = [
+                [1, 2, 2, 2, 1],
+                [2, 1, 2, 1, 2],
+                [2, 2, 1, 2, 2],
+                [2, 1, 2, 1, 2],
+                [1, 2, 2, 2, 1],
+            ];
+            var resultDisplay = document.getElementById('resultDisplay');
+            resultDisplay.innerHTML = '';
+            for (var i = 0; i < matrix.length; i++) {
+                for (var j = 0; j < matrix[i].length; j++) {
+                    if (matrix[i][j] === 1) {
+                        resultDisplay.innerHTML += firstEmoji;
+                    } else if (matrix[i][j] === 2) {
+                        resultDisplay.innerHTML += secondEmoji;
+                    } else if (matrix[i][j] === 3) {
+                        resultDisplay.innerHTML += thirstEmoji;
+                    }
+                }
+                resultDisplay.innerHTML += '<br>';
+            }
+            setTimeout(function () {
+                copyToClipboard(resultDisplay.innerText);
+            }, 10);
+        }
+
+        function copyToClipboard(text) {
+            var tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+        }
+    </script>
+
+</body>
+
+</html>
