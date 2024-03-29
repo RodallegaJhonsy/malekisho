@@ -70,7 +70,7 @@
         <div class="title">🔡 Determina 🔡</div>
         <br>
         <input type="text" id="inputName" placeholder="Ingresa un nombre desordenado">
-        <button id="searchButton" onclick="searchName()">Buscar</button>
+        <button type="button" id="searchButton" onclick="searchName()">Buscar</button>
         <div id="resultDisplay"></div>
     </div>
 
@@ -108,8 +108,52 @@
             "bocchi in the rock!", "killing bites", "ao no exorcist"
         ];
 
-        function ordenarNombreDesordenado(nombreDesordenado) {
+        function calcularDistanciaLevenshtein(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
 
+            const matrix = [];
+
+            // Inicializar la primera fila y la primera columna de la matriz
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+
+            // Llenar la matriz
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        const min = Math.min(matrix[i - 1][j - 1], matrix[i][j - 1], matrix[i - 1][j]);
+                        matrix[i][j] = min + 1;
+                    }
+                }
+            }
+
+            return matrix[b.length][a.length];
+        }
+
+        function buscarNombreSimilar(nombreDesordenado) {
+            let distanciaMinima = Infinity;
+            let nombreSimilar = "";
+
+            for (let i = 0; i < diccionario.length; i++) {
+                const distancia = calcularDistanciaLevenshtein(nombreDesordenado, diccionario[i].toLowerCase());
+                if (distancia < distanciaMinima) {
+                    distanciaMinima = distancia;
+                    nombreSimilar = diccionario[i];
+                }
+            }
+
+            return nombreSimilar;
+        }
+
+        function ordenarNombreDesordenado(nombreDesordenado) {
             nombreDesordenado = nombreDesordenado.toLowerCase().replace(/\s/g, "");
 
             const cantidadLetras = nombreDesordenado.length;
@@ -122,7 +166,6 @@
                 }
 
                 const letrasOrdenadas = nombreDiccionario.split("").sort().join("");
-
                 const letrasDesordenadas = nombreDesordenado.split("").sort().join("");
 
                 if (letrasOrdenadas === letrasDesordenadas) {
@@ -134,12 +177,15 @@
         }
 
         function searchName() {
-            const nombreDesordenado = document.getElementById('inputName').value;
+            const nombreDesordenado = document.getElementById('inputName').value.toLowerCase();
             const resultado = ordenarNombreDesordenado(nombreDesordenado);
-            document.getElementById('resultDisplay').innerText = resultado;
 
             if (resultado !== "No está ese nombre en la base de datos. Dile a malek que lo agregue.") {
+                document.getElementById('resultDisplay').innerText = resultado;
                 copyToClipboard(resultado);
+            } else {
+                const nombreSimilar = buscarNombreSimilar(nombreDesordenado);
+                document.getElementById('resultDisplay').innerText = `No se encontró, pero el nombre más similar que he encontrado es: ${nombreSimilar}`;
             }
         }
 
