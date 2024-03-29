@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalerita | Malekisho</title>
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .card {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        #copyButton {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #0056b3;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #copyButton:hover {
+            background-color: #004080;
+        }
+
+        #resultDisplay {
+            font-size: 24px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: none;
+            /* Ocultar el resultado que se copiará */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="title">🪜 Escalerita 🪜</div>
+        <br>
+        <input type="text" id="inputWord" placeholder="Ingresa una palabra">
+        <button id="copyButton" onclick="generateAndCopy()">Copiar</button>
+        <div id="resultDisplay"></div>
+    </div>
+
+    <script>
+        function generateAndCopy() {
+            var inputWords = document.getElementById('inputWord').value.split(/\s+/);
+            var resultDisplay = document.getElementById('resultDisplay');
+            var resultText = ''; // Variable para almacenar el resultado sin mostrar
+            inputWords.forEach(function (word) {
+                for (var i = 0; i <= word.length; i++) {
+                    var partialResult = word.substring(0, word.length - i);
+                    if (partialResult !== '') {
+                        resultText += partialResult + '\n';
+                    }
+                }
+            });
+            resultDisplay.innerText = resultText;
+            resultDisplay.style.display = 'block'; // Mostrar el resultado que se copiará
+            setTimeout(function () {
+                copyToClipboard(resultText);
+                document.getElementById('inputWord').value = ''; // Limpiar el campo de entrada
+                resultDisplay.style.display = 'none'; // Ocultar el resultado que se copiará
+            }, 0);
+        }
+
+        function copyToClipboard(text) {
+            var tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+        }
+    </script>
+
+</body>
+
+</html>

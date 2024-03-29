@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Determina | Malekisho</title>
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .card {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        #searchButton {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #0056b3;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #004080;
+        }
+
+        #resultDisplay {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="title">🔡 Determina 🔡</div>
+        <br>
+        <input type="text" id="inputName" placeholder="Ingresa un nombre desordenado">
+        <button id="searchButton" onclick="searchName()">Buscar</button>
+        <div id="resultDisplay"></div>
+    </div>
+
+    <script>
+        const diccionario = [
+            "naruto", "one piece", "attack on titan", "code geass", "death note", "kimetsu no yaiba",
+            "dragon ball z", "dragon ball", "dragon ball super", "haikyu!!", "kuroshitsuji", "black clover",
+            "nanatsu no taizai", "the promised neverland", "fullmetal alchemist: brotherhood", "full metal alchemist",
+            "boku no hero academia", "bungo stray dogs", "kono subarashii sekai ni shukufuku wo!", "one punch man",
+            "cells at works!", "jujutsu kaisen", "gakuen babysitters", "aharen-san wa hakarenai",
+            "kawaii dake ja nai shikimori-san", "seishun buta yarou wa bunny girl senpai no yume wo minai",
+            "kaifuku jutsushi no yarinaoshi", "tate no yusha no nariagari 0", "pokemon", "inuyasha", "91 days",
+            "sailor moon", "re:zero kara hajimeru isekai seikatsu", "yu yu hakusho", "spy x family",
+            "assassination classroom", "chainsaw man", "classroom of the elite", "death note", "fairy tail",
+            "hori-san to miyamura-kun", "jibaku shonen hanako-kun", "hunter x hunter", "jojos bizarre adventure",
+            "gintama", "kaguya-sama: love is war", "shigatsu wa kimi no uso", "kiki: entregas a domicilio",
+            "komi-san no puede comunicarse", "kuroko no basket", "neon genesis evangelion", "naruto shippuden",
+            "boruto:naruto next generation", "slam dunk", "shingeki no kyojin", "la vida desastrosa de saiki k",
+            "sword art online", "los caballeros del zodiaco", "sk8 the infinity", "yuri!!! on ice", "given",
+            "violet evergarden", "vanitas no carte", "sakura card captor", "blue lock", "mieruko-chan",
+            "sword art online alicization", "sakura trick", "baki", "hajime no ippo", "kamisama hajimemashita",
+            "tokyo ghoul", "tokyo revengers", "darling in the franxx", "dororo", "sousei no onmyouji", "btooom!",
+            "ano hi mita hana no namae o bokutachi wa mada shiranai", "domestic na kanojo", "noragami aragoto",
+            "idaten", "death parade", "re:creators", "kanojo okarashimosu", "arifureta shokugyō de sekai saikyō",
+            "ousama ranking", "date a live", "erased", "wotakoi", "rakudai kishi no cavalary", "vinland saga",
+            "beastars0", "parasyte", "banana fish", "mob psycho 100", "no game no life", "miss kobayashis dragón maid",
+            "shokugeki no soma", "k-on", "digimon adventure", "guilty crown", "himouto umaru-chan", "toradora!",
+            "soul eater", "mirai nikki", "86 eighty six", "akebi-chan no sailor fuku", "steins haré", "durarara!",
+            "takt op destiny", "tokyo 24u", "koi to uso", "bakemonogatari", "princes connect re:dive", "tower of god",
+            "mahoutsukai no yome", "dumbell non kilo moteru?", "go-toubun no hanayome", "my dress up darling", "noragami",
+            "kiznaiver", "gangsta", "deadman wonderland", "psycho pass", "11 eyes", "akame ga kill", "log horizon",
+            "bishounen tanteidan", "kanojo mo kanojo", "paripi koumei", "ijiranaide nagatoro-san", "another",
+            "puella magi madoka magika", "angel beats", "odd taxi", "re life", "kokkoku", "tokyo esp", "trinity seven",
+            "sonic x", "bakugan", "yu-gi-oh", "doraemon", "fire force", "tokyo ghoul:re", "shūmatsu no valkyrie",
+            "bocchi in the rock!", "killing bites", "ao no exorcist"
+        ];
+
+        function ordenarNombreDesordenado(nombreDesordenado) {
+
+            nombreDesordenado = nombreDesordenado.toLowerCase().replace(/\s/g, "");
+
+            const cantidadLetras = nombreDesordenado.length;
+
+            for (let i = 0; i < diccionario.length; i++) {
+                const nombreDiccionario = diccionario[i].replace(/\s/g, "");
+
+                if (nombreDiccionario.length !== cantidadLetras) {
+                    continue;
+                }
+
+                const letrasOrdenadas = nombreDiccionario.split("").sort().join("");
+
+                const letrasDesordenadas = nombreDesordenado.split("").sort().join("");
+
+                if (letrasOrdenadas === letrasDesordenadas) {
+                    return diccionario[i];
+                }
+            }
+
+            return "No se encontró, no está, gei.";
+        }
+
+        function searchName() {
+            const nombreDesordenado = document.getElementById('inputName').value;
+            const resultado = ordenarNombreDesordenado(nombreDesordenado);
+            document.getElementById('resultDisplay').innerText = resultado;
+
+            if (resultado !== "No se encontró, no está, gei.") {
+                copyToClipboard(resultado);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+        }
+    </script>
+
+</body>
+
+</html>
