@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gusanito | Malekisho</title>
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+    <link rel="stylesheet" href="Estilos/Gusanito.css">
+</head>
+<body>
+
+    <div id="container">
+        <div id="title">🪱 Gusanito 🪱</div>
+        <input type="text" id="inputText" placeholder="Escribe aquí">
+        <br>
+        <button id="copiarBtn" onclick="alternarMayusculasMinisculas()">Copiar</button>
+    </div>
+
+    <script>
+        function alternarMayusculasMinisculas() {
+            const inputElement = document.getElementById('inputText');
+            const words = inputElement.value.split(' ');
+
+            let alternado = '';
+            for (let i = 0; i < words.length; i++) {
+                let alternatingCase = '';
+                for (let j = 0; j < words[i].length; j++) {
+                    alternatingCase += j % 2 === 0 ? words[i][j].toUpperCase() : words[i][j].toLowerCase();
+                }
+                alternado += alternatingCase + ' ';
+            }
+
+            navigator.clipboard.writeText(alternado.trim());
+            inputElement.value = '';
+        }
+    </script>
+
+</body>
+
+</html>
