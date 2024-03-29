@@ -130,7 +130,7 @@
                 }
             }
 
-            return "No se encontró, no está, gei.";
+            return "No está ese nombre en la base de datos. Dile a malek que lo agregue.";
         }
 
         function searchName() {
@@ -138,7 +138,7 @@
             const resultado = ordenarNombreDesordenado(nombreDesordenado);
             document.getElementById('resultDisplay').innerText = resultado;
 
-            if (resultado !== "No se encontró, no está, gei.") {
+            if (resultado !== "No está ese nombre en la base de datos. Dile a malek que lo agregue.") {
                 copyToClipboard(resultado);
             }
         }
