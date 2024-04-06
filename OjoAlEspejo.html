@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malekisho | Espejo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #inputText {
+            flex: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        #copiarBtn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #copiarBtn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h2>🪞Ojo Al Espejo🪞</h2>
+
+        <div class="input-container">
+            <input type="text" id="inputText" placeholder="Ingrese palabra(s)">
+            <button id="copiarBtn" onclick="copiarResultado()">Copiar</button>
+        </div>
+
+        <p id="resultado"></p>
+    </div>
+
+    <script>
+        function transformarYPegar() {
+            var input = document.getElementById("inputText").value;
+            var palabras = input.split(" ");
+            var resultado = "";
+
+            for (var i = 0; i < palabras.length; i++) {
+                var palabra = palabras[i];
+                var primeraLetra = palabra.charAt(0).toUpperCase();
+                var ultimaLetra = palabra.slice(-1).toUpperCase();
+                var palabraAlReves = palabra.split("").reverse().join("");
+                var primeraLetraAlReves = palabraAlReves.charAt(0).toUpperCase();
+                var ultimaLetraAlReves = palabraAlReves.slice(-1).toUpperCase();
+                resultado += primeraLetra + palabra.slice(1, -1) + ultimaLetra + primeraLetraAlReves + palabraAlReves.slice(1, -1) + ultimaLetraAlReves + " ";
+            }
+
+            return resultado.trim();
+        }
+
+        function copiarResultado() {
+            var resultadoTransformado = transformarYPegar();
+            navigator.clipboard.writeText(resultadoTransformado)
+                .then(() => {
+                    document.getElementById("inputText").value = ""; // Limpiar el input después de copiar
+                })
+                .catch(err => {
+                    console.error('Error al copiar el texto: ', err);
+                });
+        }
+    </script>
+</body>
+
+</html>
