@@ -77,12 +77,16 @@
 
             for (var i = 0; i < palabras.length; i++) {
                 var palabra = palabras[i];
-                var primeraLetra = palabra.charAt(0).toUpperCase();
-                var ultimaLetra = palabra.slice(-1).toUpperCase();
-                var palabraAlReves = palabra.split("").reverse().join("");
-                var primeraLetraAlReves = palabraAlReves.charAt(0).toUpperCase();
-                var ultimaLetraAlReves = palabraAlReves.slice(-1).toUpperCase();
-                resultado += primeraLetra + palabra.slice(1, -1) + ultimaLetra + primeraLetraAlReves + palabraAlReves.slice(1, -1) + ultimaLetraAlReves + " ";
+                if (palabra.length === 1) { // Si la palabra tiene solo una letra
+                    resultado += palabra.toUpperCase() + palabra.toUpperCase() + " "; // Agregar la letra dos veces en mayúsculas
+                } else {
+                    var primeraLetra = palabra.charAt(0).toUpperCase();
+                    var ultimaLetra = palabra.slice(-1).toUpperCase();
+                    var palabraAlReves = palabra.split("").reverse().join("");
+                    var primeraLetraAlReves = palabraAlReves.charAt(0).toUpperCase();
+                    var ultimaLetraAlReves = palabraAlReves.slice(-1).toUpperCase();
+                    resultado += primeraLetra + palabra.slice(1, -1) + ultimaLetra + primeraLetraAlReves + palabraAlReves.slice(1, -1) + ultimaLetraAlReves + " ";
+                }
             }
 
             return resultado.trim();
