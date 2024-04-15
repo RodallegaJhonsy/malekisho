@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copiar Código Automáticamente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"] {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <label for="palabrasInput">Ingresa las palabras:</label>
+    <input type="text" id="palabrasInput">
+
+    <label for="emojiInput">Ingresa el emoji:</label>
+    <input type="text" id="emojiInput">
+
+    <button id="copyButton">Copiar</button>
+  </div>
+
+  <script>
+    const palabrasInput = document.getElementById('palabrasInput');
+    const emojiInput = document.getElementById('emojiInput');
+    const copyButton = document.getElementById('copyButton');
+
+    // Event listener para ambos inputs
+    palabrasInput.addEventListener('input', verificarInputs);
+    emojiInput.addEventListener('input', verificarInputs);
+    copyButton.addEventListener('click', copiarResultado);
+
+    function verificarInputs() {
+      const emoji = emojiInput.value;
+      const palabras = palabrasInput.value.split(' ');
+
+      if (emoji && palabras.every(palabra => palabra)) {
+        const resultado = generarResultado(emoji, palabras);
+        copyButton.disabled = false;
+      } else {
+        copyButton.disabled = true;
+      }
+    }
+
+    function generarResultado(emoji, palabras) {
+      let resultado = '';
+
+      palabras.forEach(palabra => {
+        for (let i = 0; i < palabra.length; i++) {
+          const cantidadEmojis = i + 1;
+          const emojis = emoji.repeat(cantidadEmojis);
+          resultado += emojis + palabra[i] + '\n';
+        }
+        resultado += '\n';
+      });
+
+      return resultado;
+    }
+
+    function copiarResultado() {
+      const emoji = emojiInput.value;
+      const palabras = palabrasInput.value.split(' ');
+      const resultado = generarResultado(emoji, palabras);
+
+      navigator.clipboard.writeText(resultado)
+        .then(() => {
+          palabrasInput.value = '';
+          emojiInput.value = '';
+          copyButton.disabled = true;
+        })
+        .catch(err => {
+          console.error('Error al copiar el resultado', err);
+        });
+    }
+
+    // Copiar automáticamente después de 5 segundos
+    setTimeout(verificarInputs, 5000);
+  </script>
+
+</body>
+</html>
