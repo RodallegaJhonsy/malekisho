@@ -26,10 +26,16 @@
     font-weight: bold;
   }
   
-  input[type="text"] {
-    width: 200px;
-    padding: 8px;
+  .input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
+  }
+  
+  input[type="text"] {
+    width: calc(100% - 120px); /* Ajuste para dejar espacio al botón */
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
@@ -64,12 +70,12 @@
   <div class="card">
     <h1>🌪️ Torbe 🌪️</h1>
     <label for="palabra">Ingresa una o más palabras:</label>
-    <br>
-    <input type="text" id="palabra">
-    <br>
+    <div class="input-container">
+      <input type="text" id="palabra">
+      <button onclick="copiarResultado()">Copiar</button>
+    </div>
     <br>
     <textarea id="resultado" readonly></textarea>
-    <button onclick="copiarResultado()">Copiar</button>
   </div>
 
   <script>
