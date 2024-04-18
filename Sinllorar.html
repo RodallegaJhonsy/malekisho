@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malekisho | Sin Llorar</title>
+    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        .card {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            margin-bottom: 20px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #resultDisplay {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="title">😭 Sin Llorar 😭</div>
+    <input type="text" id="inputWord" oninput="generateAndCopy(); this.value = '';" placeholder="Ingresa emojis">
+    <div id="resultDisplay"></div>
+</div>
+
+<script>
+function generateAndCopy() {
+    // Obtener el valor del input y filtrar solo emojis
+    var inputWord = document.getElementById('inputWord').value;
+    var emojiArray = inputWord.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g) || [];
+
+    // Crear una matriz que representa el patrón específico
+    var matrix = [];
+
+    // Llenar la matriz con los emojis ingresados en orden ascendente
+    for (var i = 0; i < emojiArray.length; i++) {
+        var row = [];
+        for (var j = i; j < emojiArray.length; j++) {
+            row.push(emojiArray[j]);
+        }
+        matrix.push(row);
+    }
+
+    // Agregar un salto de línea entre los dos for
+    matrix.push([]);
+
+    // Llenar la matriz con la parte de abajo
+    for (var i = 0; i < emojiArray.length; i++) {
+        var row = [];
+        for (var j = i; j >= 0; j--) {
+            row.push(emojiArray[j]);
+        }
+        matrix.push(row);
+    }
+
+    // Obtener el elemento donde se mostrará el resultado
+    var resultDisplay = document.getElementById('resultDisplay');
+    
+    // Limpiar el contenido anterior
+    resultDisplay.innerHTML = '';
+
+    // Generar y mostrar el patrón con los emojis ingresados
+    for (var i = 0; i < matrix.length; i++) {
+        for (var j = 0; j < matrix[i].length; j++) {
+            resultDisplay.innerHTML += matrix[i][j];
+        }
+        resultDisplay.innerHTML += '<br>';
+    }
+
+    // Copiar al portapapeles después de 5 segundos
+    setTimeout(function() {
+        copyToClipboard(resultDisplay.innerText);
+    }, 10);
+}
+
+function copyToClipboard(text) {
+    // Crear un elemento de texto temporal
+    var tempTextArea = document.createElement('textarea');
+    tempTextArea.value = text;
+
+    // Añadir el elemento al DOM
+    document.body.appendChild(tempTextArea);
+
+    // Seleccionar y copiar el texto
+    tempTextArea.select();
+    document.execCommand('copy');
+
+    // Eliminar el elemento temporal
+    document.body.removeChild(tempTextArea);
+}
+</script>
+
+</body>
+</html>
