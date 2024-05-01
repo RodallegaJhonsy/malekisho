@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malekisho | Torre de Dios</title>
+<link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+
+  .card {
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  input, button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  #resultado {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 100px;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1 style="text-align: center;">🗼 Torre de Dios 🗼</h1>
+  <label for="frase">Frase:</label>
+  <input type="text" id="frase" name="frase">
+  <label for="emoji">Emoji:</label>
+  <input type="text" id="emoji" name="emoji">
+  <button onclick="generarTorre()">Copiar</button>
+  <div id="resultado"></div>
+</div>
+<script>
+  function hacerTorre(frase, emoji) {
+    const palabras = frase.split(/\s+/);
+    let resultado = '';
+
+    for (const palabra of palabras) {
+      for (let i = 1; i <= palabra.length; i++) {
+        const emojiRepetido = i === palabra.length ? emoji.repeat(2) : emoji;
+        resultado += palabra.substring(0, i) + emojiRepetido + '\n';
+      }
+      resultado += "\n"; // Agrega un salto de línea entre las palabras
+    }
+
+    return resultado;
+  }
+
+  function generarTorre() {
+    const frase = document.getElementById('frase').value;
+    const emoji = document.getElementById('emoji').value;
+    const resultado = hacerTorre(frase, emoji);
+    document.getElementById('resultado').innerText = resultado;
+
+    // Copiar resultado al portapapeles
+    const tempInput = document.createElement('textarea');
+    tempInput.value = resultado;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    // Eliminar campos de entrada y botón
+    document.getElementById('frase').value = '';
+    document.getElementById('emoji').value = '';
+    document.querySelector('button').remove();
+    document.querySelector('label[for="frase"]').remove();
+    document.querySelector('label[for="emoji"]').remove();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malekisho | Reemplaza</title>
+<link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+    }
+
+    #emojiInput, #textInput, #output {
+        width: 100%;
+        height: 50px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    #generateButton, #copyButton {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    #generateButton:hover, #copyButton:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+<div class="card">
+    <h2>🧐 Reemplazar 🧐</h2>
+    <input type="text" id="emojiInput" placeholder="Emoji">
+    <input type="text" id="textInput" placeholder="Palabra">
+    <br>
+    <button id="generateButton">Copiar</button><br>
+    <textarea id="output" placeholder="Resultado" readonly></textarea><br>
+</div>
+
+<script>
+    document.getElementById("generateButton").addEventListener("click", function() {
+        const emoji = document.getElementById("emojiInput").value;
+        const text = document.getElementById("textInput").value;
+        const outputText = replaceVowels(text, emoji);
+        document.getElementById("output").value = outputText;
+        copyToClipboard(outputText);
+    });
+
+    function replaceVowels(text, emoji) {
+        const vowels = ['a', 'e', 'i', 'o', 'u'];
+        for (const vowel of vowels) {
+            text = text.replace(new RegExp(vowel, 'gi'), emoji);
+        }
+        return text;
+    }
+
+    function copyToClipboard(text) {
+        const tempTextArea = document.createElement("textarea");
+        tempTextArea.value = text;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempTextArea);
+        document.getElementById("emojiInput").value = ""; // Limpiar el contenido del campo de entrada de emoji
+        document.getElementById("textInput").value = ""; // Limpiar el contenido del campo de entrada de texto
+    }
+</script>
+</body>
+</html>
