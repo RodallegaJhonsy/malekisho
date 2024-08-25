@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirección de Palabra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        input {
+            font-size: 18px;
+            margin: 10px;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .output {
+            white-space: pre;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <input id="input-word" type="text" placeholder="Ingresa una palabra">
+    
+    <div>
+        <button onclick="generatePattern('left')">⬅</button>
+        <button onclick="generatePattern('up')">⬆</button>
+        <button onclick="generatePattern('down')">⬇</button>
+        <button onclick="generatePattern('up-left')">↖</button>
+        <button onclick="generatePattern('up-right')">↗</button>
+        <button onclick="generatePattern('down-right')">↘</button>
+        <button onclick="generatePattern('down-left')">↙</button>
+        <button onclick="generatePattern('right')">➡</button>
+    </div>
+    
+    <div id="output" class="output"></div>
+
+    <script>
+        function generatePattern(direction) {
+            const word = document.getElementById('input-word').value;
+            let result = '.\n';
+            
+            switch(direction) {
+                case 'left':
+                    result += word.split('').reverse().join('');
+                    break;
+                case 'right':
+                    result += word;
+                    break;
+                case 'up':
+                    result += word.split('').reverse().join('\n');
+                    break;
+                case 'down':
+                    result += word.split('').join('\n');
+                    break;
+                case 'up-left':
+                    for (let i = 0; i < word.length; i++) {
+                        result += ' '.repeat(i) + word[word.length - 1 - i] + '\n';
+                    }
+                    break;
+                case 'up-right':
+                    for (let i = 0; i < word.length; i++) {
+                        result += ' '.repeat(word.length - i - 1) + word[word.length - 1 - i] + '\n';
+                    }
+                    break;
+                case 'down-right':
+                    for (let i = 0; i < word.length; i++) {
+                        result += ' '.repeat(i) + word[i] + '\n';
+                    }
+                    break;
+                case 'down-left':
+                    for (let i = 0; i < word.length; i++) {
+                        result += ' '.repeat(word.length - i - 1) + word[i] + '\n';
+                    }
+                    break;
+                default:
+                    result += word;
+            }
+
+            result = '```\n' + result.trim() + '\n```';
+
+            document.getElementById('output').textContent = result;
+
+            // Copiar el resultado al portapapeles
+            copyToClipboard(result);
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
