@@ -6,87 +6,88 @@
     <title>Malekisho | Lluvia</title>
     <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
     <style>
+        #inputText {
+            font-size: 18px; /* Tamaño del texto dentro del input */
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-#inputText {
-    font-size: 18px; /* Tamaño del texto dentro del input */
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Estilo del placeholder */
-#inputText::placeholder {
-    font-size: 24px; /* Tamaño del placeholder */
-    color: #888; /* Color del placeholder */
-    opacity: 1; /* Asegura que el placeholder sea completamente visible */
-}
+        /* Estilo del placeholder */
+        #inputText::placeholder {
+            font-size: 24px; /* Tamaño del placeholder */
+            color: #888; /* Color del placeholder */
+            opacity: 1; /* Asegura que el placeholder sea completamente visible */
+        }
 
         body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    margin: 0;
-}
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
 
-.container {
-    text-align: center;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-#resultado {
-    margin-top: 20px;
-    font-size: 24px;
-    white-space: pre-line;
-}
+        #resultado {
+            margin-top: 20px;
+            font-size: 24px;
+            white-space: pre-line;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🌧️ Lluvia De Emojis 🌧️</h1>
-        <input type="text" id="inputText" placeholder="">
+        <input type="text" id="inputText" placeholder="Escribe aquí tus emojis con números">
         <div id="resultado"></div>
     </div>
     <script>
         document.getElementById('inputText').addEventListener('input', generarEscalera);
 
-function generarEscalera() {
-    const inputText = document.getElementById('inputText').value;
-    const resultado = document.getElementById('resultado');
-    resultado.innerHTML = ''; // Limpiar el resultado previo
-    
-    // Expresión regular para capturar números en cualquier formato
-    const regex = /(\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji}\uFE0F?\u200D?\uFE0F?|\p{Emoji_Modifier_Base}\uFE0F?)\s*[\[\(\{]?(\d+)[\]\)\}]?/gu;
-    let match;
-    let escalera = '';
+        function generarEscalera() {
+            const inputText = document.getElementById('inputText').value;
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = ''; // Limpiar el resultado previo
 
-    while ((match = regex.exec(inputText)) !== null) {
-        const emoji = match[1];
-        const cantidad = parseInt(match[2], 10); // Extraer solo el número
-        
-        for (let i = cantidad; i > 0; i--) {
-            escalera += emoji.repeat(i) + '\n';
+            // Expresión regular mejorada para capturar emojis combinados
+            const regex = /((?:[\uD83C-\uDBFF\uDC00-\uDFFF]+|\u200D)+)\s*[\[\(\{]?(\d+)[\]\)\}]?/gu;
+            let match;
+            let escalera = '';
+
+            // Procesar cada coincidencia de emoji y número
+            while ((match = regex.exec(inputText)) !== null) {
+                const emoji = match[1];
+                const cantidad = parseInt(match[2], 10); // Convertir el número a entero
+
+                // Generar la escalera para el emoji actual
+                for (let i = cantidad; i > 0; i--) {
+                    escalera += emoji.repeat(i) + '\n';
+                }
+            }
+
+            resultado.innerHTML = escalera;
+
+            // Copiar el resultado al portapapeles automáticamente
+            if (escalera) {
+                navigator.clipboard.writeText(escalera)
+                    .then(() => {
+                        console.log('Resultado copiado al portapapeles.');
+                    })
+                    .catch(err => {
+                        console.error('Error al copiar al portapapeles: ', err);
+                    });
+            }
         }
-    }
-
-    resultado.innerHTML = escalera;
-
-    // Copiar el resultado al portapapeles automáticamente
-    if (escalera) {
-        navigator.clipboard.writeText(escalera)
-            .then(() => {
-                
-            })
-            .catch(err => {
-                console.error('Error al copiar al portapapeles: ', err);
-            });
-    }
-}
     </script>
 </body>
 </html>
