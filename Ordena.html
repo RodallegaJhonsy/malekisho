@@ -1,0 +1,87 @@
+78% of storage used … If you run out, you can't create, edit, and upload files.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordenar Palabras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        textarea, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button {
+            background-color: #6200ea;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4500b5;
+        }
+        .result {
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 18px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ordena</h1>
+        <textarea id="wordInput" rows="5" placeholder="Pega y saca top"></textarea>
+        <button id="generateButton">Copiar</button>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        document.getElementById("generateButton").addEventListener("click", function() {
+            const input = document.getElementById("wordInput").value.trim();
+            const resultContainer = document.getElementById("result");
+            resultContainer.innerHTML = ""; // Limpiar resultados anteriores
+
+            // Separar las palabras por líneas y eliminar espacios extra
+            const words = input.split("\n").map(word => word.trim()).filter(word => word !== "");
+
+            // Validar cantidad de palabras
+            if (words.length < 1 || words.length > 500) {
+                resultContainer.textContent = "";
+                return;
+            }
+
+            // Ordenar alfabéticamente
+            const sortedWords = words.sort((a, b) => a.localeCompare(b));
+
+            // Mostrar resultado
+            const resultText = sortedWords.join("\n");
+            resultContainer.textContent = resultText;
+
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(resultText).then(() => {
+            }).catch(() => {
+                alert("No se pudo copiar el texto.");
+            });
+        });
+    </script>
+</body>
+</html>
