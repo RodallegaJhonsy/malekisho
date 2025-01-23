@@ -57,13 +57,10 @@
             var emojiArray = inputWord.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g) || [];
             var firstEmoji = emojiArray[0] || '';
             var secondEmoji = emojiArray[1] || '';
-            var thirstEmoji = emojiArray[2] || '';
             var matrix = [
-                [1, 1, 1, 1, 1],
-                [1, 2, 2, 2, 1],
-                [1, 2, 3, 2, 1],
-                [1, 2, 2, 2, 1],
-                [1, 1, 1, 1, 1],
+                [1, 1, 1],
+                [1, 2, 1],
+                [1, 1, 1]
             ];
             var resultDisplay = document.getElementById('resultDisplay');
             resultDisplay.innerHTML = '';
@@ -73,8 +70,6 @@
                         resultDisplay.innerHTML += firstEmoji;
                     } else if (matrix[i][j] === 2) {
                         resultDisplay.innerHTML += secondEmoji;
-                    } else if (matrix[i][j] === 3) {
-                        resultDisplay.innerHTML += thirstEmoji;
                     }
                 }
                 resultDisplay.innerHTML += '<br>';
