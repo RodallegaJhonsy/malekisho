@@ -41,18 +41,33 @@
             line-height: 1.5;
             margin-bottom: 20px;
         }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="card">
-        <input type="text" id="inputWord" oninput="generateAndCopy()" placeholder="Ingresa emojis">
+        <input type="text" id="inputWord" oninput="generateMatrix()" placeholder="Ingresa emojis">
         <div id="resultDisplay"></div>
+        <button onclick="copyToClipboard()">Copiar</button>
     </div>
 
     <script>
-        function generateAndCopy() {
+        function generateMatrix() {
             var inputWord = document.getElementById('inputWord').value;
             var emojiArray = inputWord.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g) || [];
             var firstEmoji = emojiArray[0] || '';
@@ -74,14 +89,12 @@
                 }
                 resultDisplay.innerHTML += '<br>';
             }
-            setTimeout(function () {
-                copyToClipboard(resultDisplay.innerText);
-            }, 10);
         }
 
-        function copyToClipboard(text) {
+        function copyToClipboard() {
+            var resultDisplay = document.getElementById('resultDisplay');
             var tempTextArea = document.createElement('textarea');
-            tempTextArea.value = text;
+            tempTextArea.value = resultDisplay.innerText;
             document.body.appendChild(tempTextArea);
             tempTextArea.select();
             document.execCommand('copy');
