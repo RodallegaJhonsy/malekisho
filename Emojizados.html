@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emojizados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🥠 Emojizados 🥠</h2>
+        <input type="text" id="inputText" placeholder="">
+        <button onclick="generateResult()">MalekClic</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function generateResult() {
+            const input = document.getElementById('inputText').value;
+            const resultDiv = document.getElementById('result');
+
+            const emojiRegex = /\p{Emoji}/u;
+            const emojiMatch = input.match(emojiRegex);
+
+            if (!emojiMatch) {
+                resultDiv.textContent = " ";
+                return;
+            }
+
+            const emoji = emojiMatch[0];
+
+            const textWithoutEmoji = input.replace(emoji, '').trim();
+            const words = textWithoutEmoji.split(/\s+/);
+            const result = words
+                .map(word => word.split('').map(char => `${emoji}${char}`).join('') + emoji)
+                .join(' ');
+
+            resultDiv.textContent = result;
+
+            navigator.clipboard.writeText(result).then(() => {
+            }).catch(err => {
+            });
+        }
+    </script>
+</body>
+</html>
