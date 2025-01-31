@@ -63,13 +63,13 @@
             font-weight: bold;
             font-family: monospace;
             display: inline-block;
-            text-align: center; /* Centra el texto */
-            white-space: pre-wrap; /* Para permitir saltos de línea */
+            text-align: center;
+            white-space: pre-wrap; /* Permite saltos de línea */
             background: #e9ecef;
             padding: 10px;
             border-radius: 5px;
             min-height: 50px;
-            width: 100%; /* Hace que el área de salida ocupe todo el ancho disponible */
+            width: 100%;
             word-wrap: break-word; /* Asegura que las palabras largas no se desborden */
         }
 
@@ -115,11 +115,12 @@
 
                 if (index < words.length - 1) {
                     formattedText += "\n"; // Espacio entre palabras para la vista
+                    resultForCopy += "\n"; // Asegura que el salto de línea se mantenga al copiar
                 }
             });
 
-            // Mostrar solo la palabra original en la pantalla
-            outputDiv.textContent = input; // Solo la palabra original
+            // Mostrar el texto con los saltos de línea entre palabras
+            outputDiv.textContent = formattedText;
 
             // Elimina el salto de línea extra al final antes de copiar
             resultForCopy = resultForCopy.trimEnd();
