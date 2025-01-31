@@ -125,7 +125,7 @@
             // Elimina el salto de línea extra al final antes de copiar
             resultForCopy = resultForCopy.trimEnd();
 
-            navigator.clipboard.writeText(resultForCopy).then(() => {
+            navigator.clipboard.writeText("```" + resultForCopy + "```").then(() => {
                 button.textContent = "¡Copiado!";
                 button.classList.add("copied");
                 setTimeout(() => {
