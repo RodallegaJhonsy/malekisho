@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palabra Espejo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            max-width: 300px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            outline: none;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 18px;
+            color: white;
+            background: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .output {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: monospace;
+            display: inline-block;
+            text-align: center; /* Centra el texto */
+            white-space: pre-wrap; /* Para permitir saltos de línea */
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 50px;
+            width: 100%; /* Hace que el área de salida ocupe todo el ancho disponible */
+            word-wrap: break-word; /* Asegura que las palabras largas no se desborden */
+        }
+
+        .copied {
+            background: #28a745 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🔃 Palabra Espejo🔃</h2>
+        <input type="text" id="inputText" placeholder="... ">
+        <button id="actionButton" onclick="generateAndCopy()">Copy</button>
+
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function generateAndCopy() {
+            let input = document.getElementById("inputText").value.trim();
+            let outputDiv = document.getElementById("output");
+            let button = document.getElementById("actionButton");
+
+            if (input === "") {
+                alert("Por favor, ingresa un texto.");
+                return;
+            }
+
+            let words = input.split(" ");
+            let resultForCopy = "";
+            let formattedText = "";
+
+            words.forEach((word, index) => {
+                let maxLength = word.length;
+                let reversedWord = word.split("").reverse().join("");
+                
+                // Generamos el formato con los reflejos de las letras
+                for (let i = 0; i < maxLength; i++) {
+                    formattedText += word[i] + " " + reversedWord[i] + "\n";
+                    resultForCopy += word[i] + " " + reversedWord[i] + "\n";
+                }
+
+                if (index < words.length - 1) {
+                    formattedText += "\n"; // Espacio entre palabras para la vista
+                }
+            });
+
+            // Mostrar solo la palabra original en la pantalla
+            outputDiv.textContent = input; // Solo la palabra original
+
+            // Elimina el salto de línea extra al final antes de copiar
+            resultForCopy = resultForCopy.trimEnd();
+
+            navigator.clipboard.writeText(resultForCopy).then(() => {
+                button.textContent = "¡Copiado!";
+                button.classList.add("copied");
+                setTimeout(() => {
+                    button.textContent = "Copy";
+                    button.classList.remove("copied");
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+</html>
