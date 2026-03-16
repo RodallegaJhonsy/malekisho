@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { Header } from "@/components/header"
 
+type SubscriptionStatus = "active" | "inactive" | "expired"
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   
@@ -23,19 +25,21 @@ export default async function DashboardPage() {
       })
     : "No definida"
 
-  const statusTextMap: Record<string, string> = {
+  const status: SubscriptionStatus = (profile?.subscription_status as SubscriptionStatus) || "inactive"
+
+  const statusTextMap: Record<SubscriptionStatus, string> = {
     active: "Activa",
     inactive: "Inactiva",
     expired: "Expirada"
   }
-  const subscriptionStatusText = statusTextMap[profile?.subscription_status ?? "inactive"] ?? "Inactiva"
+  const subscriptionStatusText = statusTextMap[status]
 
-  const statusColorMap: Record<string, string> = {
+  const statusColorMap: Record<SubscriptionStatus, string> = {
     active: "bg-green-100 text-green-800",
     inactive: "bg-gray-100 text-gray-800",
     expired: "bg-red-100 text-red-800"
   }
-  const subscriptionStatusColor = statusColorMap[profile?.subscription_status ?? "inactive"] ?? "bg-gray-100 text-gray-800"
+  const subscriptionStatusColor = statusColorMap[status]
 
   return (
     <>
@@ -47,7 +51,7 @@ export default async function DashboardPage() {
             Bienvenido, {userName}
           </h2>
           <p className="text-muted-foreground">
-            Aquí tienes un resumen de tu cuenta
+            Aqui tienes un resumen de tu cuenta
           </p>
         </div>
 
@@ -62,7 +66,7 @@ export default async function DashboardPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Estado de Suscripción</p>
+                <p className="text-sm text-muted-foreground">Estado de Suscripcion</p>
                 <span className={`mt-1 inline-flex rounded-full px-2 py-1 text-xs font-medium ${subscriptionStatusColor}`}>
                   {subscriptionStatusText}
                 </span>
@@ -79,7 +83,7 @@ export default async function DashboardPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Fecha de Expiración</p>
+                <p className="text-sm text-muted-foreground">Fecha de Expiracion</p>
                 <p className="text-lg font-semibold text-foreground">{expiresAt}</p>
               </div>
             </div>
@@ -105,7 +109,7 @@ export default async function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="mt-8">
-          <h3 className="mb-4 text-lg font-semibold text-foreground">Acciones Rápidas</h3>
+          <h3 className="mb-4 text-lg font-semibold text-foreground">Acciones Rapidas</h3>
           <div className="grid gap-4 md:grid-cols-2">
             <a
               href="/dashboard/profile"
@@ -118,7 +122,7 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <p className="font-medium text-foreground">Editar Perfil</p>
-                <p className="text-sm text-muted-foreground">Actualiza tu información personal</p>
+                <p className="text-sm text-muted-foreground">Actualiza tu informacion personal</p>
               </div>
             </a>
 
@@ -132,7 +136,7 @@ export default async function DashboardPage() {
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-foreground">Ver Suscripción</p>
+                <p className="font-medium text-foreground">Ver Suscripcion</p>
                 <p className="text-sm text-muted-foreground">Consulta los detalles de tu plan</p>
               </div>
             </a>

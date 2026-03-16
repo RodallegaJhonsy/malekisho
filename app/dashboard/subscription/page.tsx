@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { Header } from "@/components/header"
 
+type SubscriptionStatus = "active" | "inactive" | "expired"
+
 export default async function SubscriptionPage() {
   const supabase = await createClient()
   
@@ -31,23 +33,25 @@ export default async function SubscriptionPage() {
       })
     : "No definida"
 
-  const statusTextMap: Record<string, string> = {
+  const status: SubscriptionStatus = (profile?.subscription_status as SubscriptionStatus) || "inactive"
+
+  const statusTextMap: Record<SubscriptionStatus, string> = {
     active: "Activa",
     inactive: "Inactiva",
     expired: "Expirada"
   }
-  const subscriptionStatusText = statusTextMap[profile?.subscription_status ?? "inactive"] ?? "Inactiva"
+  const subscriptionStatusText = statusTextMap[status]
 
-  const statusColorMap: Record<string, string> = {
+  const statusColorMap: Record<SubscriptionStatus, string> = {
     active: "bg-green-100 text-green-800",
     inactive: "bg-gray-100 text-gray-800",
     expired: "bg-red-100 text-red-800"
   }
-  const subscriptionStatusColor = statusColorMap[profile?.subscription_status ?? "inactive"] ?? "bg-gray-100 text-gray-800"
+  const subscriptionStatusColor = statusColorMap[status]
 
   // Calculate days remaining
   let daysRemaining = 0
-  if (profile?.subscription_expires_at && profile?.subscription_status === "active") {
+  if (profile?.subscription_expires_at && status === "active") {
     const now = new Date()
     const expiry = new Date(profile.subscription_expires_at)
     const diffTime = expiry.getTime() - now.getTime()
@@ -56,14 +60,14 @@ export default async function SubscriptionPage() {
 
   return (
     <>
-      <Header title="Mi Suscripción" userName={userName} />
+      <Header title="Mi Suscripcion" userName={userName} />
       <div className="p-6">
         <div className="mx-auto max-w-3xl space-y-6">
           {/* Subscription Status Card */}
           <div className="rounded-xl border border-border bg-card p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-foreground">Estado de Suscripción</h2>
+                <h2 className="text-lg font-semibold text-foreground">Estado de Suscripcion</h2>
                 <p className="text-sm text-muted-foreground">Detalles de tu plan actual</p>
               </div>
               <span className={`rounded-full px-4 py-2 text-sm font-medium ${subscriptionStatusColor}`}>
@@ -71,14 +75,14 @@ export default async function SubscriptionPage() {
               </span>
             </div>
 
-            {profile?.subscription_status === "active" && daysRemaining > 0 && (
+            {status === "active" && daysRemaining > 0 && (
               <div className="mt-6 rounded-lg bg-primary/5 p-4">
                 <div className="flex items-center gap-3">
                   <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <p className="text-sm text-foreground">
-                    Te quedan <span className="font-semibold">{daysRemaining} días</span> de suscripción
+                    Te quedan <span className="font-semibold">{daysRemaining} dias</span> de suscripcion
                   </p>
                 </div>
               </div>
@@ -94,7 +98,7 @@ export default async function SubscriptionPage() {
                 <span className="font-medium text-foreground">{createdAt}</span>
               </div>
               <div className="flex items-center justify-between border-b border-border pb-4">
-                <span className="text-muted-foreground">Fecha de expiración</span>
+                <span className="text-muted-foreground">Fecha de expiracion</span>
                 <span className="font-medium text-foreground">{expiresAt}</span>
               </div>
               <div className="flex items-center justify-between">
@@ -108,9 +112,9 @@ export default async function SubscriptionPage() {
 
           {/* Contact Admin */}
           <div className="rounded-xl border border-border bg-card p-6">
-            <h3 className="mb-2 text-lg font-semibold text-foreground">¿Necesitas renovar?</h3>
+            <h3 className="mb-2 text-lg font-semibold text-foreground">Necesitas renovar?</h3>
             <p className="mb-4 text-sm text-muted-foreground">
-              Para renovar o extender tu suscripción, contacta al administrador de la plataforma.
+              Para renovar o extender tu suscripcion, contacta al administrador de la plataforma.
             </p>
             <a
               href="mailto:admin@malekisho.com"
