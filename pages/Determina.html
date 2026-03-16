@@ -1,81 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Determina | Malekisho</title>
-    <link rel="shortcut icon" href="favicon-16x16.png" type="image/x-icon">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
+    <link rel="shortcut icon" href="../assets/favicon-16x16.png" type="image/x-icon">
 
-        .card {
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: calc(100% - 40px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
-
-        #searchButton {
-            padding: 10px;
-            font-size: 16px;
-            background-color: #0056b3;
-            border: none;
-            border-radius: 5px;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #searchButton:hover {
-            background-color: #004080;
-        }
-
-        #resultDisplay {
-            font-size: 18px;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="card">
-        <div class="title">🔡 Determina 🔡</div>
-        <br>
-        <input type="text" id="inputName" placeholder="Ingresa un nombre desordenado">
-        <button type="button" id="searchButton" onclick="searchName()">Buscar</button>
-        <div id="resultDisplay"></div>
-    </div>
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
-        const diccionario = [
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#4f46e5',
+                            DEFAULT: '#4338ca',
+                            dark: '#3730a3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-light selection:text-white">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+
+        // --- DICCIONARIO BASE ---
+        // Puedes agregar aquí miles de palabras sin problema.
+        const DICCIONARIO = [
             "naruto", "one piece", "attack on titan", "code geass", "death note", "kimetsu no yaiba",
             "dragon ball z", "dragon ball", "dragon ball super", "haikyu!!", "kuroshitsuji", "black clover",
             "nanatsu no taizai", "the promised neverland", "fullmetal alchemist: brotherhood", "full metal alchemist",
@@ -874,100 +837,226 @@
     "Tsumiki no Ie",
     "Kigeki",
     "Rain Town"
-]
+];
 
-        function calcularDistanciaLevenshtein(a, b) {
+        // --- FUNCIONES DE UTILIDAD (Levenshtein y Normalización) ---
+        const normalize = (str) => {
+            // Quita acentos, convierte a minúsculas y elimina espacios/símbolos
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+        };
+
+        const sortString = (str) => {
+            return normalize(str).split('').sort().join('');
+        };
+
+        const levenshtein = (a, b) => {
             if (a.length === 0) return b.length;
             if (b.length === 0) return a.length;
-
-            const matrix = [];
-
-            // Inicializar la primera fila y la primera columna de la matriz
-            for (let i = 0; i <= b.length; i++) {
-                matrix[i] = [i];
-            }
-
-            for (let j = 0; j <= a.length; j++) {
-                matrix[0][j] = j;
-            }
-
-            // Llenar la matriz
+            const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
             for (let i = 1; i <= b.length; i++) {
                 for (let j = 1; j <= a.length; j++) {
                     if (b.charAt(i - 1) === a.charAt(j - 1)) {
                         matrix[i][j] = matrix[i - 1][j - 1];
                     } else {
-                        const min = Math.min(matrix[i - 1][j - 1], matrix[i][j - 1], matrix[i - 1][j]);
-                        matrix[i][j] = min + 1;
+                        matrix[i][j] = Math.min(matrix[i - 1][j - 1], matrix[i][j - 1], matrix[i - 1][j]) + 1;
                     }
                 }
             }
-
             return matrix[b.length][a.length];
-        }
+        };
 
-        function buscarNombreSimilar(nombreDesordenado) {
-            let distanciaMinima = Infinity;
-            let nombreSimilar = "";
+        function DeterminaApp() {
+            const [inputText, setInputText] = useState('');
+            const [autoCopy, setAutoCopy] = useState(true);
+            const [copied, setCopied] = useState(false);
+            const [searchResult, setSearchResult] = useState(null);
 
-            for (let i = 0; i < diccionario.length; i++) {
-                const distancia = calcularDistanciaLevenshtein(nombreDesordenado, diccionario[i].toLowerCase());
-                if (distancia < distanciaMinima) {
-                    distanciaMinima = distancia;
-                    nombreSimilar = diccionario[i];
+            // Pre-procesar el diccionario solo una vez al cargar (Optimización para diccionarios grandes)
+            const processedDict = useMemo(() => {
+                return DICCIONARIO.map(word => ({
+                    original: word,
+                    normalized: normalize(word),
+                    sorted: sortString(word)
+                }));
+            }, []);
+
+            // Motor de Búsqueda
+            const performSearch = (input) => {
+                if (!input.trim()) return null;
+
+                const normInput = normalize(input);
+                const sortInput = sortString(input);
+
+                // 1. Búsqueda de Anagrama Exacto
+                const anagramMatch = processedDict.find(item => item.sorted === sortInput);
+                if (anagramMatch) return { text: anagramMatch.original, type: 'success', msg: '¡Anagrama resuelto!' };
+
+                // 2. Búsqueda Parcial (si contiene partes de la palabra)
+                const partialMatch = processedDict.find(item => item.normalized.includes(normInput));
+                if (partialMatch) return { text: partialMatch.original, type: 'partial', msg: 'Coincidencia parcial encontrada.' };
+
+                // 3. Búsqueda por Similitud (Levenshtein)
+                let minDistance = Infinity;
+                let closestWord = null;
+
+                for (const item of processedDict) {
+                    const dist = levenshtein(normInput, item.normalized);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        closestWord = item;
+                    }
                 }
-            }
 
-            return nombreSimilar;
-        }
-
-        function ordenarNombreDesordenado(nombreDesordenado) {
-            nombreDesordenado = nombreDesordenado.toLowerCase().replace(/\s/g, "");
-
-            const cantidadLetras = nombreDesordenado.length;
-
-            for (let i = 0; i < diccionario.length; i++) {
-                const nombreDiccionario = diccionario[i].replace(/\s/g, "");
-
-                if (nombreDiccionario.length !== cantidadLetras) {
-                    continue;
+                if (closestWord && minDistance <= 4) { // Umbral de tolerancia
+                    return { text: closestWord.original, type: 'similar', msg: `¿Quisiste decir esto?` };
                 }
 
-                const letrasOrdenadas = nombreDiccionario.split("").sort().join("");
-                const letrasDesordenadas = nombreDesordenado.split("").sort().join("");
+                return { text: '', type: 'error', msg: 'No se encontró en la base de datos.' };
+            };
 
-                if (letrasOrdenadas === letrasDesordenadas) {
-                    return diccionario[i];
+            // Ejecutar la búsqueda al hacer clic en el botón o al presionar Enter
+            const handleSearch = () => {
+                const result = performSearch(inputText);
+                setSearchResult(result);
+
+                // Auto copiado si encuentra algo válido
+                if (autoCopy && result && result.type !== 'error') {
+                    copyToClipboard(result.text);
                 }
-            }
+            };
 
-            return "No está ese nombre en la base de datos. Dile a malek que lo agregue.";
+            const copyToClipboard = async (textToCopy) => {
+                if (!textToCopy) return;
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                } catch (err) {
+                    console.error('Error al copiar: ', err);
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    
+                    {/* Header */}
+                    <header className="bg-white shadow-sm border-b border-slate-200">
+                        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+                            <h1 className="text-xl font-extrabold text-brand tracking-tight">Malekisho</h1>
+                            <a href="Dashboard.html" className="text-sm font-medium text-slate-500 hover:text-brand transition-colors flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Volver al Dashboard
+                            </a>
+                        </div>
+                    </header>
+
+                    {/* Contenedor Principal */}
+                    <main className="flex-grow flex items-center justify-center p-4">
+                        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 transition-all">
+                            
+                            <div className="p-8 sm:p-10">
+                                {/* Título */}
+                                <div className="text-center mb-6">
+                                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center justify-center gap-2">
+                                        <span>🔡</span> Determina <span>🔡</span>
+                                    </h2>
+                                    <p className="text-slate-500 mt-2 text-sm">Resuelve el anagrama buscando en el diccionario.</p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    {/* Input y Botón de Búsqueda */}
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type="text" 
+                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all"
+                                            placeholder="Ingresa nombre desordenado..."
+                                            value={inputText}
+                                            onChange={(e) => setInputText(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                            autoFocus
+                                        />
+                                        <button 
+                                            onClick={handleSearch}
+                                            className="bg-brand hover:bg-brand-dark text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand flex-shrink-0"
+                                        >
+                                            Buscar
+                                        </button>
+                                    </div>
+
+                                    {/* Toggle de Auto-copiado */}
+                                    <div className="flex items-center justify-center bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                        <label className="flex items-center cursor-pointer">
+                                            <div className="relative">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only" 
+                                                    checked={autoCopy}
+                                                    onChange={() => setAutoCopy(!autoCopy)}
+                                                />
+                                                <div className={`block w-10 h-6 rounded-full transition-colors ${autoCopy ? 'bg-brand' : 'bg-slate-300'}`}></div>
+                                                <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${autoCopy ? 'transform translate-x-4' : ''}`}></div>
+                                            </div>
+                                            <div className="ml-3 text-sm font-medium text-slate-700">
+                                                Copiar al encontrar
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    {/* Display del resultado */}
+                                    <div className="bg-slate-100 rounded-lg border border-slate-200 p-6 flex flex-col justify-center items-center min-h-[120px] text-center">
+                                        {!searchResult ? (
+                                            <span className="text-slate-400 text-sm">El resultado aparecerá aquí</span>
+                                        ) : searchResult.type === 'error' ? (
+                                            <span className="text-red-500 font-medium text-sm">{searchResult.msg}</span>
+                                        ) : (
+                                            <React.Fragment>
+                                                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{searchResult.msg}</span>
+                                                <span className="text-2xl font-extrabold text-brand-dark">{searchResult.text}</span>
+                                            </React.Fragment>
+                                        )}
+                                    </div>
+
+                                    {/* Botón Manual de Copiar */}
+                                    <button 
+                                        onClick={() => copyToClipboard(searchResult?.text)}
+                                        disabled={!searchResult || searchResult.type === 'error'}
+                                        className={`w-full font-bold py-3 px-4 rounded-lg transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 flex justify-center items-center gap-2
+                                            ${(!searchResult || searchResult.type === 'error')
+                                                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' 
+                                                : copied 
+                                                    ? 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500 shadow-green-500/30'
+                                                    : 'bg-brand hover:bg-brand-dark text-white focus:ring-brand shadow-brand/30'
+                                            }`}
+                                    >
+                                        {copied ? (
+                                            <React.Fragment>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                </svg>
+                                                ¡Copiado!
+                                            </React.Fragment>
+                                        ) : (
+                                            <React.Fragment>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                                </svg>
+                                                Copiar Resultado
+                                            </React.Fragment>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
         }
 
-        function searchName() {
-            const nombreDesordenado = document.getElementById('inputName').value.toLowerCase();
-            const resultado = ordenarNombreDesordenado(nombreDesordenado);
-
-            if (resultado !== "No está ese nombre en la base de datos. Dile a malek que lo agregue.") {
-                document.getElementById('resultDisplay').innerText = resultado;
-                copyToClipboard(resultado);
-            } else {
-                const nombreSimilar = buscarNombreSimilar(nombreDesordenado);
-                document.getElementById('resultDisplay').innerText = `No se encontró, pero el nombre más similar que he encontrado es: ${nombreSimilar}`;
-            }
-        }
-
-        function copyToClipboard(text) {
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = text;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempTextArea);
-        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DeterminaApp />);
     </script>
-
 </body>
-
-
 </html>

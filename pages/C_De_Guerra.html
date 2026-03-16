@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C. De Guerra | Malekisho</title>
+    <link rel="shortcut icon" href="../assets/favicon-16x16.png" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#4f46e5',
+                            DEFAULT: '#4338ca',
+                            dark: '#3730a3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-light selection:text-white">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function GuerraApp() {
+            const [inputText, setInputText] = useState('');
+            const [copied, setCopied] = useState(false);
+
+            // Tu diccionario de conversión
+            const leetMap = {
+                'a': '4', 'e': '3', 'i': '1', 'o': '8', 'u': '7',
+                'A': '4', 'E': '3', 'I': '1', 'O': '8', 'U': '7',
+                'á': '4', 'é': '3', 'í': '1', 'ó': '8', 'ú': '7',
+                'Á': '4', 'É': '3', 'Í': '1', 'Ó': '8', 'Ú': '7'
+            };
+
+            // Convertimos el texto al vuelo usando el leetMap
+            const convertedText = inputText
+                .split('')
+                .map(char => leetMap[char] || char) // Si el caracter está en el mapa, lo cambia; si no, lo deja igual
+                .join('');
+
+            const handleCopy = async () => {
+                if (!convertedText) return;
+
+                try {
+                    await navigator.clipboard.writeText(convertedText);
+                    setCopied(true);
+                    setInputText(''); // Limpiamos el input tal como pediste en tu código original
+                    
+                    setTimeout(() => setCopied(false), 2000);
+                } catch (err) {
+                    console.error('Error al copiar: ', err);
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    
+                    {/* Header */}
+                    <header className="bg-white shadow-sm border-b border-slate-200">
+                        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+                            <h1 className="text-xl font-extrabold text-brand tracking-tight">Malekisho</h1>
+                            <a href="Dashboard.html" className="text-sm font-medium text-slate-500 hover:text-brand transition-colors flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Volver al Dashboard
+                            </a>
+                        </div>
+                    </header>
+
+                    {/* Contenedor Principal */}
+                    <main className="flex-grow flex items-center justify-center p-4">
+                        <div className="max-w-lg w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 transition-all">
+                            
+                            <div className="p-8 sm:p-10">
+                                {/* Título */}
+                                <div className="text-center mb-8">
+                                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center justify-center gap-2">
+                                        <span>🪖</span> C. De Guerra <span>🪖</span>
+                                    </h2>
+                                    <p className="text-slate-500 mt-2 text-sm">Convierte tu texto reemplazando las vocales por números.</p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    {/* Input */}
+                                    <div>
+                                        <input 
+                                            type="text" 
+                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all text-center text-lg"
+                                            placeholder="Ingresa una palabra..."
+                                            value={inputText}
+                                            onChange={(e) => setInputText(e.target.value)}
+                                            autoFocus
+                                        />
+                                    </div>
+
+                                    {/* Display del resultado */}
+                                    <div className="min-h-[4rem] flex items-center justify-center p-4 bg-slate-50 rounded-lg border border-slate-200 break-all">
+                                        {convertedText ? (
+                                            <span className="text-2xl font-bold text-brand-dark">{convertedText}</span>
+                                        ) : (
+                                            <span className="text-slate-400 italic text-sm">3l r3s7lt4d8 4p4r3c3rá 4quí</span>
+                                        )}
+                                    </div>
+
+                                    {/* Botón de Copiar */}
+                                    <button 
+                                        onClick={handleCopy}
+                                        disabled={!convertedText}
+                                        className={`w-full font-bold py-3 px-4 rounded-lg transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 flex justify-center items-center gap-2
+                                            ${!convertedText 
+                                                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' 
+                                                : copied 
+                                                    ? 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500 shadow-green-500/30'
+                                                    : 'bg-brand hover:bg-brand-dark text-white focus:ring-brand shadow-brand/30'
+                                            }`}
+                                    >
+                                        {copied ? (
+                                            <React.Fragment>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                </svg>
+                                                ¡Copiado!
+                                            </React.Fragment>
+                                        ) : (
+                                            <React.Fragment>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                                </svg>
+                                                Copiar Resultado
+                                            </React.Fragment>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<GuerraApp />);
+    </script>
+</body>
+</html>
