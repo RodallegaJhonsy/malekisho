@@ -23,17 +23,19 @@ export default async function DashboardPage() {
       })
     : "No definida"
 
-  const subscriptionStatusText = {
+  const statusTextMap: Record<string, string> = {
     active: "Activa",
     inactive: "Inactiva",
     expired: "Expirada"
-  }[profile?.subscription_status || "inactive"]
+  }
+  const subscriptionStatusText = statusTextMap[profile?.subscription_status ?? "inactive"] ?? "Inactiva"
 
-  const subscriptionStatusColor = {
+  const statusColorMap: Record<string, string> = {
     active: "bg-green-100 text-green-800",
     inactive: "bg-gray-100 text-gray-800",
     expired: "bg-red-100 text-red-800"
-  }[profile?.subscription_status || "inactive"]
+  }
+  const subscriptionStatusColor = statusColorMap[profile?.subscription_status ?? "inactive"] ?? "bg-gray-100 text-gray-800"
 
   return (
     <>
