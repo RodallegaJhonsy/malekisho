@@ -38,7 +38,7 @@ export async function updateSession(request: NextRequest) {
   // If user is not logged in and trying to access protected routes
   if (!user && (pathname.startsWith("/dashboard") || pathname.startsWith("/admin"))) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/auth/login";
     return NextResponse.redirect(url);
   }
 
@@ -46,18 +46,20 @@ export async function updateSession(request: NextRequest) {
   if (user && pathname.startsWith("/dashboard")) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("subscription_end_date, role")
+      .select("subscription_status, subscription_expires_at, role")
       .eq("id", user.id)
       .single();
 
-    if (profile) {
-      const subscriptionEndDate = new Date(profile.subscription_end_date);
+    if (profile && profile.role !== "admin") {
       const now = new Date();
+      const expiresAt = profile.subscription_expires_at ? new Date(profile.subscription_expires_at) : null;
 
-      // If subscription is expired and user is not admin, redirect to expired page
-      if (subscriptionEndDate < now && profile.role !== "admin") {
+      // If subscription is inactive or expired, redirect to subscription page
+      if (profile.subscription_status === "inactive" || 
+          profile.subscription_status === "expired" || 
+          (expiresAt && expiresAt < now)) {
         const url = request.nextUrl.clone();
-        url.pathname = "/expired";
+        url.pathname = "/subscription-expired";
         return NextResponse.redirect(url);
       }
     }
@@ -79,7 +81,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // If user is logged in and on auth pages, redirect to dashboard
-  if (user && (pathname === "/login" || pathname === "/register")) {
+  if (user && pathname.startsWith("/auth/")) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
